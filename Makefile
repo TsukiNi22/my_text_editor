@@ -17,7 +17,7 @@ W += -Wuninitialized -Wmaybe-uninitialized
 DEBUG := -g -ggdb3
 
 CPPFLAGS := -I ./include/
-LDFLAGS := -L ./lib/ -lmy
+LDFLAGS := -L ./lib/ -lmy -lncurses -ldl
 CFLAGS := $(W)
 
 ifeq ($(d), t)
@@ -34,6 +34,7 @@ GLOBAL :=		main.c \
 
 INIT :=			init/init_data.c \
 				init/data/init_global.c \
+				init/data/init_ncurses.c \
 				init/init_flag.c \
 				init/flag/null.c \
 				init/flag/help.c \

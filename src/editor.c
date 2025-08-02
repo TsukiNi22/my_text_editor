@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  01/08/2025 by Tsukini
+##  02/08/2025 by Tsukini
 
 File Name:
 ##  kamion.c
@@ -20,9 +20,10 @@ File Description:
 \**************************************************************/
 
 #include "memory.h"     // my_strdup function
-#include "array.h"  // array_t type
-#include "editor.h" // editor_t type
-#include "error.h"  // error handling
+#include "array.h"      // array_t type
+#include "editor.h"     // editor_t type
+#include "error.h"      // error handling
+#include <ncurses.h>    // ncurses function
 
 // Add the file given directly to the list
 static int direct_file(editor_t *data, int const argc, char const *argv[])
@@ -79,6 +80,25 @@ int editor(int const argc, char const *argv[], editor_t *data)
     // Execption
     if (argc > 1 && data->files->len == 0)
         return err_bw_arg(data, KO, "File", "No valid file found for the edition", NULL, NULL, false);
+
+    // Temporary test display
+    int ch;
+    int row = 1;
+    mvprintw(0, 0, "F1 to quit...");
+    while ((ch = getch()) != KEY_F(1)) {
+        mvprintw(row, 0, "Key pressed: ");
+        if (ch >= 32 && ch <= 126)
+            printw("'%c' (code %d)", ch, ch);
+        else
+            printw("code %d", ch);
+        row++;
+        if (row >= LINES) {
+            row = 1;
+            clear();
+            mvprintw(0, 0, "F1 to quit...");
+        }
+        refresh();
+    }
 
     return OK;
 }

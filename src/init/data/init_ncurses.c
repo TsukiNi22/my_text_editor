@@ -11,34 +11,36 @@ Edition:
 ##  02/08/2025 by Tsukini
 
 File Name:
-##  init_data.c
+##  init_ncurses.c
 
 File Description:
-## Call of function to init main structure var
+## Initialisation of ncurses
 \**************************************************************/
 
-#include "editor.h" // editor_t type
-#include "error.h"  // error handling
+#include "error.h"      // error handling
+#include <ncurses.h>    // ncurses init function
 
-/* Init main structure function
+/* Ncurses initialisation function
 ----------------------------------------------------------------
- * Call of the function to initialise all var of the
- * main structure and check the init return
+ * Initialisation of the terminal for ncurses
 ----------------------------------------------------------------
-##  data -> main data structure
+##  void -> nothing
 ----------------------------------------------------------------
 */
-int init_data(editor_t *data)
+int init_ncurses(void)
 {
-    // Check for potential null pointer
-    if (!data)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
-    
-    // Init global data used in every sub part
-    if (init_global(data) == KO)
+    int res = OK;
+
+    // init ncurses
+    if (!initscr())
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
-    // Init ncurses
-    if (init_ncurses() == KO)
+
+    // parametre of ncurses
+    res += (cbreak() == KO);                // no wait for enter to read the keys pressed
+    res += (noecho() == KO);                // dosen't display the keys pressed
+    res += (keypad(stdscr, TRUE) == KO);    // allow spécial keys
+    if (res != OK)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
+
     return OK;
 }

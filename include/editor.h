@@ -57,6 +57,7 @@ int editor(int const argc, char const *argv[], editor_t *data); // Error: KO
 /* init_data */
 int init_data(editor_t *data); // Error: KO
 int init_global(editor_t *data); // Error: KO
+int init_ncurses(void); // Error: None
 
 /* init_flag */
 int init_flag(editor_t *data, int const argc, char const *argv[]); // Error: KO
