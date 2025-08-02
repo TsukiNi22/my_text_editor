@@ -42,8 +42,8 @@ INIT :=			init/init_data.c \
 				init/flag/Directory.c
 
 USEFUL := 		useful/is_valid_dir.c \
-				useful/is_valid_file.c
-
+				useful/is_valid_file.c \
+				useful/get_file.c
 
 FILES := $(GLOBAL) $(INIT)
 FILES += $(USEFUL)

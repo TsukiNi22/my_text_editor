@@ -69,6 +69,7 @@ int flag_Directory(editor_t *data, int const argc, char const *argv[]); // Error
 /* useful */
 bool is_valid_dir(editor_t *data, char const *path, bool err); // Error: false
 bool is_valid_file(editor_t *data, char const *path, bool err); // Error: false
+char *get_file(const char *file); // Error: NULL
 
 /* exit */
 int free_data(editor_t *data); // Error: KO
