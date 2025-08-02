@@ -30,6 +30,7 @@ bw files_path
 | Task                | State        |
 | ------------------- | ------------ |
 | Open/Close File     |  In Progress |
+| Deplacement         |  Nothing     |
 | Edit Content        |  Nothing     |
 | Save Modification   |  Nothing     |
 | Handle Spécial Char |  Nothing     |
