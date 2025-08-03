@@ -11,37 +11,40 @@ Edition:
 ##  03/08/2025 by Tsukini
 
 File Name:
-##  init_ncurses.c
+##  handle_keys.c
 
 File Description:
-## Initialisation of ncurses
+## Handle the key pressed during the display
 \**************************************************************/
 
+#include "editor.h"     // editor_t type
 #include "error.h"      // error handling
-#include <ncurses.h>    // ncurses init function
+#include <ncurses.h>    // ncurses function
 
-/* Ncurses initialisation function
+/* Handle key pressed function
 ----------------------------------------------------------------
- * Initialisation of the terminal for ncurses
+ * Handle the key pressed during the display of a File
+ * and do/call the corresponding action
 ----------------------------------------------------------------
-##  void -> nothing
+##  data -> main data structure
+##  ch -> the key code
 ----------------------------------------------------------------
 */
-int init_ncurses(void)
+int handle_keys(editor_t *data, const int ch)
 {
-    int res = OK;
+    // Check for potential null pointer
+    if (!data)
+        return err_prog(PTR_ERR, KO, ERR_INFO);
 
-    // init ncurses
-    if (!initscr())
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
-
-    // parametre of ncurses
-    res += (cbreak() == KO);                // no wait for enter to read the keys pressed
-    res += (noecho() == KO);                // dosen't display the keys pressed
-    res += (start_color() == KO);           // activate the color
-    res += (keypad(stdscr, TRUE) == KO);    // allow spécial keys
-    if (res != OK)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
+    // cursor direction
+    if (ch == KEY_UP && data->cursor_row > 0)
+        data->cursor_row--;
+    if (ch == KEY_DOWN)
+        data->cursor_row++;
+    if (ch == KEY_LEFT && data->cursor_col > 0)
+        data->cursor_col--;
+    if (ch == KEY_RIGHT)
+        data->cursor_col++;
 
     return OK;
 }

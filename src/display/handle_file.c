@@ -23,6 +23,23 @@ File Description:
 #include <ncurses.h>    // ncurses function
 #include <stddef.h>     // size_t type, NULL define
 
+// display the header information
+static int display_header(editor_t *data)
+{
+    // Check for potential null pointer
+    if (!data)
+        return err_prog(PTR_ERR, KO, ERR_INFO);
+    
+    // init the color
+    init_pair(1, COLOR_BLUE, COLOR_WHITE);
+        
+    // write the header with the color
+    attron(COLOR_PAIR(1));
+    mvprintw(0, 0, "File: '%s' (F1 to quit...)", data->file);
+    attroff(COLOR_PAIR(1));
+    return OK;
+}
+
 // display the line in the terminal
 static int display(editor_t *data)
 {
@@ -40,7 +57,8 @@ static int display(editor_t *data)
 
     // Temporary test display
     clear();
-    mvprintw(0, 0, "File: '%s' (F1 to quit...)", data->file);
+    if (display_header(data) == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
     for (int i = 1, row = 0; formated_lines[row] && i < LINES; i++, row++)
         mvprintw(i, 0, formated_lines[row]);
     refresh();
@@ -76,10 +94,15 @@ int handle_file(editor_t *data, const char *file)
         return err_prog(PTR_ERR, KO, ERR_INFO);
 
     // wait for F1 to quit
-    for (int ch = 0; ch != KEY_F(1); ch = getch()) {
+    for (int ch = KO; ch != KEY_F(1); ch = getch()) {
+        // handle the key pressed
+        if (ch != KO && handle_keys(data, ch) == KO)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
+
         // update the display
         if (display(data) == KO)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
+        move(data->cursor_row - data->screen_row + 1, data->cursor_col - data->screen_col);
     }
     
     // free memory alloced

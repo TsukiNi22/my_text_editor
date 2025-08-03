@@ -46,7 +46,8 @@ USEFUL := 		useful/is_valid_dir.c \
 				useful/get_file.c
 
 DISPLAY := 		display/handle_file.c \
-				display/format_lines.c
+				display/format_lines.c \
+				display/handle_keys.c
 
 FILES := $(GLOBAL) $(INIT)
 FILES += $(USEFUL) $(DISPLAY)

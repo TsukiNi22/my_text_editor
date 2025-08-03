@@ -77,25 +77,46 @@ static int update_pos(editor_t *data, char **lines, int max_cols, int max_rows)
     
     // formatage of the cursor's row
     for (lines_nb = 0; lines[lines_nb]; lines_nb++);
-    if (data->cursor_row > lines_nb - 1)
+    if (lines_nb == 0)
+        data->cursor_row = 0;
+    else if (data->cursor_row > lines_nb - 1)
         data->cursor_row = lines_nb - 1;
 
     // formatage of the cursor's col
     for (line_lenght = 0; lines[data->cursor_row][line_lenght]; line_lenght++);
-    if (data->cursor_col > line_lenght - 1)
+    if (line_lenght == 0)
+        data->cursor_col = 0;
+    else if (data->cursor_col > line_lenght - 1 && line_lenght > 0)
         data->cursor_col = line_lenght - 1;
     
     // formatage of the screen's row
-    if (data->cursor_row > data->screen_row + (max_rows - 1 - CURSOR_ROW_FROM_BORDER) && (int) data->cursor_row >= max_rows - 1 - CURSOR_ROW_FROM_BORDER)
-        data->screen_row = data->cursor_row - (max_rows - 1 - CURSOR_ROW_FROM_BORDER);
-    if (data->cursor_row < data->screen_row + CURSOR_ROW_FROM_BORDER && data->cursor_row >= CURSOR_ROW_FROM_BORDER)
-        data->screen_row = data->cursor_row - CURSOR_ROW_FROM_BORDER;
+    if (data->cursor_row > data->screen_row + (max_rows - 1 - CURSOR_ROW_FROM_BORDER) && data->cursor_row + CURSOR_ROW_FROM_BORDER < lines_nb) {
+        if ((int) data->cursor_row >= max_rows - 1 - CURSOR_ROW_FROM_BORDER)
+            data->screen_row = data->cursor_row - (max_rows - 1 - CURSOR_ROW_FROM_BORDER);
+        else
+            data->screen_row = 0;
+    }
+    if (data->cursor_row < data->screen_row + CURSOR_ROW_FROM_BORDER) {
+        if (data->cursor_row >= CURSOR_ROW_FROM_BORDER)
+            data->screen_row = data->cursor_row - CURSOR_ROW_FROM_BORDER;
+        else
+            data->screen_row = 0;
+    }
 
     // formatage of the screen's col
-    if (data->cursor_col > data->screen_col + (max_cols - 1 - CURSOR_COL_FROM_BORDER) && (int) data->cursor_col >= max_cols - 1 - CURSOR_COL_FROM_BORDER)
-        data->screen_col = data->cursor_col - (max_cols - 1 - CURSOR_COL_FROM_BORDER);
-    if (data->cursor_col < data->screen_col + CURSOR_COL_FROM_BORDER && data->cursor_col >= CURSOR_COL_FROM_BORDER)
-        data->screen_col = data->cursor_col - CURSOR_COL_FROM_BORDER;
+    if (data->cursor_col > data->screen_col + (max_cols - 1 - CURSOR_COL_FROM_BORDER)) {
+        if ((int) data->cursor_col >= max_cols - 1 - CURSOR_COL_FROM_BORDER)
+            data->screen_col = data->cursor_col - (max_cols - 1 - CURSOR_COL_FROM_BORDER);
+        else
+            data->screen_col = 0;
+    }
+    if (data->cursor_col < data->screen_col + CURSOR_COL_FROM_BORDER) {
+        if (data->cursor_col >= CURSOR_COL_FROM_BORDER)
+            data->screen_col = data->cursor_col - CURSOR_COL_FROM_BORDER;
+        else
+            data->screen_col = 0;
+    }
+    
     return OK;
 }
 
