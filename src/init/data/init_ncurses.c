@@ -39,9 +39,9 @@ int init_ncurses(void)
     res += (cbreak() == KO);                // no wait for enter to read the keys pressed
     res += (noecho() == KO);                // dosen't display the keys pressed
     res += (start_color() == KO);           // activate the color
+    res += (bkgd(A_NORMAL) == KO);          // set the basic color
     res += (keypad(stdscr, TRUE) == KO);    // allow spécial keys
     if (res != OK)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
-
     return OK;
 }
