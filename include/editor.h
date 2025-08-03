@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  01/08/2025 by Tsukini
+##  03/08/2025 by Tsukini
 
 File Name:
 ##  editor.h
@@ -28,6 +28,13 @@ File Description:
     #include <stddef.h>     // size_t type
     #include <stdbool.h>    // boolean type
 
+    //----------------------------------------------------------------//
+    /* DEFINE */
+
+    /* display */
+    #define CURSOR_ROW_FROM_BORDER 2
+    #define CURSOR_COL_FROM_BORDER 5
+
 //----------------------------------------------------------------//
 /* TYPEDEF */
 
@@ -40,7 +47,19 @@ typedef struct editor_s {
 
     /* argument information */
     array_t *files;
-    
+ 
+    /* global data */
+    const char *file;
+    char *content;
+
+    /* screen */
+    size_t screen_row;
+    size_t screen_col;
+
+    /* cursor */
+    size_t cursor_row;
+    size_t cursor_col;
+
     /* ouput */
     bool help;
     bool err_sys;
@@ -70,6 +89,10 @@ int flag_Directory(editor_t *data, int const argc, char const *argv[]); // Error
 bool is_valid_dir(editor_t *data, char const *path, bool err); // Error: false
 bool is_valid_file(editor_t *data, char const *path, bool err); // Error: false
 char *get_file(const char *file); // Error: NULL
+
+/* display */
+int handle_file(editor_t *data, const char *file); // Error: KO
+char **format_lines(editor_t *data, int max_cols, int max_rows); // Error: KO
 
 /* exit */
 int free_data(editor_t *data); // Error: KO

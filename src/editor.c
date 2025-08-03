@@ -23,7 +23,7 @@ File Description:
 #include "array.h"      // array_t type
 #include "editor.h"     // editor_t type
 #include "error.h"      // error handling
-#include <ncurses.h>    // ncurses function
+#include <stddef.h>     // size_t type
 
 // Add the file given directly to the list
 static int direct_file(editor_t *data, int const argc, char const *argv[])
@@ -78,27 +78,13 @@ int editor(int const argc, char const *argv[], editor_t *data)
         return OK;
 
     // Execption
-    if (argc > 1 && data->files->len == 0)
+    if (data->files->len == 0)
         return err_bw_arg(data, KO, "File", "No valid file found for the edition", NULL, NULL, false);
 
-    // Temporary test display
-    int ch;
-    int row = 1;
-    mvprintw(0, 0, "F1 to quit...");
-    while ((ch = getch()) != KEY_F(1)) {
-        mvprintw(row, 0, "Key pressed: ");
-        if (ch >= 32 && ch <= 126)
-            printw("'%c' (code %d)", ch, ch);
-        else
-            printw("code %d", ch);
-        row++;
-        if (row >= LINES) {
-            row = 1;
-            clear();
-            mvprintw(0, 0, "F1 to quit...");
-        }
-        refresh();
+    // for each file found call the handling file function
+    for (size_t i = 0; i < data->files->len; i++) {
+        if (handle_file(data, data->files->data[i]) == KO)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
     }
-
     return OK;
 }

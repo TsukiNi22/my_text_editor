@@ -12,6 +12,7 @@ main_test*.c
 test_sample.c
 a.out
 unit_tests
+test_file
 :
 q
 vg

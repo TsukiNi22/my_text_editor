@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  01/08/2025 by Tsukini
+##  02/08/2025 by Tsukini
 
 File Name:
 ##  main.c
@@ -43,6 +43,10 @@ int main(int const argc, char const *argv[])
     // Check for potential null pointer
     if (!argv)
         return err_prog(PTR_ERR, KO, ERR_INFO);
+
+    // no argument given
+    if (argc == 1)
+        return flag_help();
 
     // Initialisation of the var used for error return and help
     data.argc = argc;

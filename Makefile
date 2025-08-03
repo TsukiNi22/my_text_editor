@@ -45,8 +45,11 @@ USEFUL := 		useful/is_valid_dir.c \
 				useful/is_valid_file.c \
 				useful/get_file.c
 
+DISPLAY := 		display/handle_file.c \
+				display/format_lines.c
+
 FILES := $(GLOBAL) $(INIT)
-FILES += $(USEFUL)
+FILES += $(USEFUL) $(DISPLAY)
 SRC := $(addprefix src/, $(FILES))
 OBJ := $(SRC:%.c=$(BUILD_DIR)/%.o)
 
