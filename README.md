@@ -29,9 +29,9 @@ bw files_path
 
 | Task                | State        |
 | ------------------- | ------------ |
-| Open/Close File     |  In Progress |
-| Deplacement         |  Nothing     |
-| Edit Content        |  Nothing     |
+| Open/Close File     |  Done        |
+| Deplacement         |  Done        |
+| Edit Content        |  In Progress |
 | Save Modification   |  Nothing     |
 | Handle Spécial Char |  Nothing     |
 | Add Spécial Control |  Nothing     |
