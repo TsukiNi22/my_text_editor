@@ -34,20 +34,21 @@ static int display(editor_t *data)
     
     // format the lines for the row & col number
     resize_term(0, 0);
-    formated_lines = format_lines(data, COLS, LINES - 1);
+    formated_lines = format_lines(data, COLS, LINES - 2);
     if (!formated_lines)
         return err_prog(PTR_ERR, KO, ERR_INFO);
 
-    // Temporary test display
-    clear();
-    if (display_top_header(data) == KO)
+    // clear the screen
+    for (int i = 0; i < LINES; i++) {
+        move(i, 0);
+        clrtoeol();
+    }
+    
+    // display the content
+    if (display_top_header(data) == KO || display_bottom_header(data) == KO)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
-    refresh();
-    for (int i = 1, row = 0; formated_lines[row] && i < LINES; i++, row++)
+    for (int i = 1, row = 0; formated_lines[row] && i < LINES  - 1; i++, row++)
         mvprintw(i, 0, "%s", formated_lines[row]);
-    refresh();
-    if (display_bottom_header(data) == KO)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
     refresh();
 
     // free memory alloced
