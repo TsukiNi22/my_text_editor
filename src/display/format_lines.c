@@ -26,25 +26,27 @@ File Description:
 // update the col & row of cursor & screen
 static int update_pos(editor_t *data, int max_cols, int max_rows)
 {
-    size_t lines_nb, line_lenght = 0;
+    size_t lines_nb, line_len = 0;
+    char *line = NULL;
     
     // Check for potential null pointer
     if (!data)
         return err_prog(PTR_ERR, KO, ERR_INFO);
     
     // formatage of the cursor's rows
-    lines_nb = data->file_map->len;
+    lines_nb = data->file_lines->len;
     if (lines_nb == 0)
         data->cursor_row = 0;
     else if (data->cursor_row > lines_nb - 1)
         data->cursor_row = lines_nb - 1;
 
     // formatage of the cursor's col
-    line_lenght = ((line_t *) data->file_map->data[data->cursor_row])->len;
-    if (line_lenght == 0)
+    line = data->file_lines->data[data->cursor_row];
+    for (line_len = 0; line[line_len]; line_len++);
+    if (line_len == 0)
         data->cursor_col = 0;
-    else if (data->cursor_col > line_lenght - 1 && line_lenght > 0)
-        data->cursor_col = line_lenght - 1;
+    else if (data->cursor_col > line_len - 1 && line_len > 0)
+        data->cursor_col = line_len - 1;
     
     // formatage of the screen's row
     if (data->cursor_row > data->screen_row + (max_rows - 1 - CURSOR_ROW_FROM_BORDER) && data->cursor_row + CURSOR_ROW_FROM_BORDER < lines_nb) {
@@ -88,7 +90,7 @@ static int update_pos(editor_t *data, int max_cols, int max_rows)
 char **format_lines(editor_t *data, int max_cols, int max_rows)
 {
     char **formated_lines = NULL;
-    line_t *line = NULL;
+    char *line = NULL;
 
     // Check for potential null pointer
     if (!data)
@@ -112,10 +114,10 @@ char **format_lines(editor_t *data, int max_cols, int max_rows)
         return err_prog_n(UNDEF_ERR, ERR_INFO);
 
     // setup of the formated line
-    for (int i = 0; i + data->screen_row < data->file_map->len && i < max_rows; i++) {
-        line = data->file_map->data[i + data->screen_row];
-        for (int j = 0; j + data->screen_col < line->len && j < max_cols; j++)
-            formated_lines[i][j] = line->content[j + data->screen_col];
+    for (int i = 0; i + data->screen_row < data->file_lines->len && i < max_rows; i++) {
+        line = data->file_lines->data[i + data->screen_row];
+        for (int j = 0; line[j + data->screen_col] && j < max_cols; j++)
+            formated_lines[i][j] = line[j + data->screen_col];
     }
     return formated_lines;
 }

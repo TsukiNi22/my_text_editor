@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  03/08/2025 by Tsukini
+##  04/08/2025 by Tsukini
 
 File Name:
 ##  free_data.c
@@ -71,18 +71,6 @@ static int free_ptr(void *ptr)
     return OK;
 }
 
-// Free simple pointer
-static int free_line(void *ptr)
-{
-    // Check for potential null pointer
-    if (!ptr)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
-    
-    free(((line_t *) ptr)->content);
-    free(ptr);
-    return OK;
-}
-
 /* Free data function
 ----------------------------------------------------------------
  * Free the var in the main structure who was malloced
@@ -100,7 +88,7 @@ int free_data(editor_t *data)
         return err_prog(PTR_ERR, KO, ERR_INFO);
 
     res += delete_array(&data->files, &free_ptr);
-    res += delete_array(&data->file_map, &free_line);
+    res += delete_array(&data->file_lines, &free_ptr);
     res += free_ncurses();
     if (res != OK)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);

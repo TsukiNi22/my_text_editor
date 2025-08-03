@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  03/08/2025 by Tsukini
+##  04/08/2025 by Tsukini
 
 File Name:
 ##  editor.h
@@ -38,15 +38,6 @@ File Description:
 //----------------------------------------------------------------//
 /* TYPEDEF */
 
-/* file line */
-typedef struct line_s {
-    /* content */
-    char *content;
-
-    /* info */
-    size_t len;
-} line_t;
-
 /* data */
 typedef struct editor_s {
     /* global_info */
@@ -60,7 +51,7 @@ typedef struct editor_s {
     /* global data */
     const char *file;
     char *content;
-    array_t *file_map;
+    array_t *file_lines;
 
     /* screen */
     size_t screen_row;
@@ -103,7 +94,7 @@ char *get_file(const char *file); // Error: NULL
 
 /* display */
 int handle_file(editor_t *data, const char *file); // Error: KO
-array_t *map_file(char *content); // Error: NULL
+array_t *get_file_lines(char *content); // Error: NULL
 char **format_lines(editor_t *data, int max_cols, int max_rows); // Error: NULL
 int handle_keys(editor_t *data, const int ch); // Error: KO
 int display_top_header(editor_t *data); // Error: KO
