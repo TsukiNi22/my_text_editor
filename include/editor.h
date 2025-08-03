@@ -67,6 +67,7 @@ typedef struct editor_s {
     size_t screen_col;
 
     /* cursor */
+    size_t cursor_actual_col;
     size_t cursor_row;
     size_t cursor_col;
 

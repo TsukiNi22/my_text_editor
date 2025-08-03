@@ -24,7 +24,7 @@ File Description:
 #include <stddef.h>     // size_t type, NULL define
 
 // display the line in the terminal
-static int display(editor_t *data)
+static int display_content(editor_t *data)
 {
     char **formated_lines = NULL;
     
@@ -77,6 +77,7 @@ int handle_file(editor_t *data, const char *file)
     data->file_map = map_file(data->content);
     data->screen_row = 0;
     data->screen_col = 0;
+    data->cursor_actual_col = 0;
     data->cursor_row = 0;
     data->cursor_col = 0;
     if (!data->content || !data->file_map)
@@ -89,7 +90,7 @@ int handle_file(editor_t *data, const char *file)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
 
         // update the display
-        if (display(data) == KO)
+        if (display_content(data) == KO)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
         move(data->cursor_row - data->screen_row + 1, data->cursor_col - data->screen_col);
     }
