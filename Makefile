@@ -46,6 +46,7 @@ USEFUL := 		useful/is_valid_dir.c \
 				useful/get_file.c
 
 DISPLAY := 		display/handle_file.c \
+				display/map_file.c \
 				display/format_lines.c \
 				display/handle_keys.c \
 				display/headers.c

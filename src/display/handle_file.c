@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  03/08/2025 by Tsukini
+##  04/08/2025 by Tsukini
 
 File Name:
 ##  handle_file.c
@@ -73,11 +73,12 @@ int handle_file(editor_t *data, const char *file)
     // init the file value
     data->file = file;
     data->content = get_file(file);
+    data->file_map = map_file(data->content);
     data->screen_row = 0;
     data->screen_col = 0;
     data->cursor_row = 0;
     data->cursor_col = 0;
-    if (!data->content)
+    if (!data->content || !data->file_map)
         return err_prog(PTR_ERR, KO, ERR_INFO);
 
     // wait for F1 to quit
