@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  01/08/2025 by Tsukini
+##  02/08/2025 by Tsukini
 
 File Name:
 ##  help.c
@@ -44,9 +44,9 @@ int flag_help(void)
     "\t[32m-%c, %s [0m\n"
     "\t\tWrite the informations of the executable\n"
     "\t[32m-%c, %s [31mdirectory_path[0m\n"
-    "\t\tAdd the files found without recursive in the given [31mdirectory_path[0m in the list of file to compile\n"
+    "\t\tAdd the files found without recursive in the given [31mdirectory_path[0m in the list of file to edit\n"
     "\t[32m-%c, %s [31mdirectory_path[0m\n"
-    "\t\tAdd the files found recursively in the given [31mdirectory_path[0m in the list of file to compile\n"
+    "\t\tAdd the files found recursively in the given [31mdirectory_path[0m in the list of file to edit\n"
     // USAGE
     , flags[1], flags[2] // d D
     , flags[1], flags[2] // d D
