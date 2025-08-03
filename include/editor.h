@@ -94,6 +94,8 @@ char *get_file(const char *file); // Error: NULL
 int handle_file(editor_t *data, const char *file); // Error: KO
 char **format_lines(editor_t *data, int max_cols, int max_rows); // Error: NULL
 int handle_keys(editor_t *data, const int ch); // Error: KO
+int display_top_header(editor_t *data); // Error: KO
+int display_bottom_header(editor_t *data); // Error: KO
 
 /* exit */
 int free_data(editor_t *data); // Error: KO

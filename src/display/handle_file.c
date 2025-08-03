@@ -23,65 +23,6 @@ File Description:
 #include <ncurses.h>    // ncurses function
 #include <stddef.h>     // size_t type, NULL define
 
-// display the top header information
-static int display_top_header(editor_t *data)
-{
-    // Check for potential null pointer
-    if (!data)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
-    
-    // init the color
-    init_pair(1, COLOR_BLUE, COLOR_WHITE);
-
-    // write the header with the color
-    bkgdset(COLOR_PAIR(1) | A_BOLD);
-    move(0, 0);
-    clrtoeol();
-    mvprintw(0, 0, "File: '%s'", data->file);
-    bkgdset(A_NORMAL);
-    return OK;
-}
-
-// display the bottom header information
-static int display_bottom_header(editor_t *data)
-{
-    size_t pos_cursor_info = 25;
-    size_t pos = 0;
-
-    // Check for potential null pointer
-    if (!data)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
-    
-    // setup the position of the text
-    if (COLS <= 15 + pos_cursor_info)
-        pos_cursor_info += COLS - (15 + pos_cursor_info);
-
-    // init the color
-    init_pair(2, COLOR_BLUE, COLOR_WHITE);
-    
-    // set the color
-    bkgdset(COLOR_PAIR(2));
-    move(LINES - 1, 0);
-    clrtoeol();
-
-    // write the header with the color
-    pos = COLS - 15 - pos_cursor_info;
-    if (pos > 14)
-        mvprintw(LINES - 1, 0, "mode: '%s'", "select"); // read, write, select, exe, none
-    else if (pos > 9)
-        mvprintw(LINES - 1, 0, "mode: '%c'", 's'); // r, w, s, e, n
-    else
-        mvprintw(LINES - 1, 0, "'%c'", 's'); // r, w, s, e, n
-    if (pos <= 5)
-        pos = 6;
-    mvprintw(LINES - 1, pos, "%lu,%lu", data->cursor_row + 1, data->cursor_col + 1);
-    mvprintw(LINES - 1, COLS - 15, "(F1 to quit...)");
-    
-    // reset the color
-    bkgdset(A_NORMAL);
-    return OK;
-}
-
 // display the line in the terminal
 static int display(editor_t *data)
 {
