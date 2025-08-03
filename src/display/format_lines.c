@@ -147,6 +147,7 @@ char **format_lines(editor_t *data, int max_cols, int max_rows)
             return err_prog_n(UNDEF_ERR, ERR_INFO);
         for (int j = 0; j < max_cols; j++)
             formated_lines[i][j] = ' ';
+        formated_lines[i][max_cols] = '\0';
     }
     formated_lines[max_rows] = NULL;
 

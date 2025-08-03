@@ -59,8 +59,10 @@ static int display(editor_t *data)
     clear();
     if (display_header(data) == KO)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
+    mvprintw(1, 0, "%lu %lu %lu %lu", data->screen_row, data->screen_col, data->cursor_row, data->cursor_col);
+    refresh();
     for (int i = 1, row = 0; formated_lines[row] && i < LINES; i++, row++)
-        mvprintw(i, 0, formated_lines[row]);
+        mvprintw(i, 0, "%s", formated_lines[row]);
     refresh();
 
     // free memory alloced
