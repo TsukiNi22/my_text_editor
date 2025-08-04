@@ -17,6 +17,7 @@ File Description:
 ## Return the content of the given file
 \**************************************************************/
 
+#include "memory.h"     // my_malloc_c function
 #include "editor.h"     // editor_t type, get_file function
 #include "error.h"      // error handling
 #include <stdlib.h>     // free function
@@ -69,6 +70,38 @@ static int display_content(editor_t *data, int max_cols, int max_rows)
     return OK;
 }
 
+// init the var for the display
+static int init_var(editor_t *data, const char *file)
+{    
+    // Check for potential null pointer
+    if (!data || !file)
+        return err_prog(PTR_ERR, KO, ERR_INFO);
+
+    // init global data
+    curs_set(1);
+    data->mode = WRITE;
+    data->mode_old = WRITE;
+    data->display_help = false;
+
+    // init file information
+    data->file = file;
+    if (is_valid_file(data, file, false))
+        data->content = get_file(file);
+    else if (my_malloc_c(&(data->content), 1) == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
+    data->file_lines = get_file_lines(data->content);
+    if (!data->content || !data->file_lines)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
+    
+    // init pos of screen & cursor
+    data->screen_row = 0;
+    data->screen_col = 0;
+    data->cursor_actual_col = 0;
+    data->cursor_row = 0;
+    data->cursor_col = 0;
+    return OK;
+}
+
 /* Handle open/close file function
 ----------------------------------------------------------------
  * Handle the opening & closing of the file in the display
@@ -85,20 +118,8 @@ int display_file(editor_t *data, const char *file)
         return err_prog(PTR_ERR, KO, ERR_INFO);
 
     // init the file value
-    curs_set(1);
-    data->mode = WRITE;
-    data->mode_old = WRITE;
-    data->display_help = false;
-    data->file = file;
-    data->content = get_file(file);
-    data->file_lines = get_file_lines(data->content);
-    data->screen_row = 0;
-    data->screen_col = 0;
-    data->cursor_actual_col = 0;
-    data->cursor_row = 0;
-    data->cursor_col = 0;
-    if (!data->content || !data->file_lines)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
+    if (init_var(data, file) == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
 
     // wait for F1 to quit
     for (int ch = KO; ch != KEY_F(1); ch = getch()) {

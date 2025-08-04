@@ -37,10 +37,6 @@ static int direct_file(editor_t *data, int const argc, char const *argv[])
         if (argv[i][0] == '-')
             break;
 
-        // Check if it's a file or a directory
-        if (!is_valid_file(data, argv[i], false))
-            return err_bw_arg(data, KO, "Argument", "Invalid file given", argv[i], NULL, false);
-
         // Set the file in the array
         if (add_array(data->files, my_strdup((char *) argv[i])) == KO)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
