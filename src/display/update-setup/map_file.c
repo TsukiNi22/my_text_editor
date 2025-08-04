@@ -70,5 +70,16 @@ array_t *get_file_lines(char *content)
             ptr = &(content[i + 1]);
         }
     }
+
+    // empty file initialisation
+    if (!content[0]) {
+        // create the line
+        if (my_malloc_c(&(line), 1) == KO)
+            return err_prog_n(UNDEF_ERR, ERR_INFO);
+
+        // add the line to the array
+        if (add_array(file_lines, line) == KO)
+            return err_prog_n(UNDEF_ERR, ERR_INFO);
+    }
     return file_lines;
 }
