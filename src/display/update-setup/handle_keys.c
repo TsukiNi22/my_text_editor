@@ -23,6 +23,7 @@ File Description:
 #include "error.h"      // error handling
 #include <ncurses.h>    // ncurses function
 #include <stdlib.h>     // free function
+#include <stdio.h>      // file handle functions
 #include <stddef.h>     // size_t type, NULL define
 
 // Free simple pointer
@@ -311,6 +312,44 @@ static int changement_mode(editor_t *data, const int ch)
     return OK;
 }
 
+// save the actual file modified
+static int save_content(editor_t *data)
+{
+    FILE *file = NULL;
+    char *file_content = NULL;
+    char *line = NULL;
+    size_t size, index = 0;
+
+    // Check for potential null pointer
+    if (!data)
+        return err_prog(PTR_ERR, KO, ERR_INFO);
+    
+    // get the full size
+    for (size_t i = 0; i < data->file_lines->len; i++) {
+        line = data->file_lines->data[i];
+        for (size_t j = 0; line[j]; j++, size++);
+    }
+    if (my_malloc_c(&file_content, size + data->file_lines->len + 1) == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
+    
+    // setup the content
+    for (size_t i = 0; i < data->file_lines->len; i++) {
+        line = data->file_lines->data[i];
+        for (size_t j = 0; line[j]; j++, index++)
+            file_content[index] = line[j];
+        if (i + 1 < data->file_lines->len)
+            file_content[index++] = '\n';
+    }
+
+    // write the file
+    file = fopen(data->file, "w");
+    if (!file)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
+    fputs(file_content, file);
+    fclose(file);
+    return OK;
+}
+
 /* Handle key pressed function
 ----------------------------------------------------------------
  * Handle the key pressed during the display of a File
@@ -340,6 +379,9 @@ int handle_keys(editor_t *data, const int ch)
 
     // mode changement
     if (!data->display_help && changement_mode(data, ch) == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
+    
+    if (data->mode != NONE && ch == KEY_F(2) && save_content(data) == KO)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
     return OK;
 }
