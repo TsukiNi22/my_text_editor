@@ -88,7 +88,8 @@ int free_data(editor_t *data)
         return err_prog(PTR_ERR, KO, ERR_INFO);
 
     res += delete_array(&data->files, &free_ptr);
-    res += delete_array(&data->file_lines, &free_ptr);
+    if (data->help_lines)
+        res += delete_array(&data->help_lines, &free_ptr);
     res += free_ncurses();
     if (res != OK)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);

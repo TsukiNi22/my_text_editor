@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  01/08/2025 by Tsukini
+##  04/08/2025 by Tsukini
 
 File Name:
 ##  init_global.c
@@ -20,7 +20,6 @@ File Description:
 #include "editor.h"     // editor_t type
 #include "error.h"      // error handling
 #include <stdlib.h>     // malloc function
-#include <stdbool.h>    // bool type
 
 /* Global initialisation function
 ----------------------------------------------------------------

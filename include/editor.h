@@ -57,11 +57,16 @@ typedef struct editor_s {
     /* argument information */
     array_t *files;
  
-    /* global data */
+    /* global file data */
     file_mode_t mode;
+    file_mode_t mode_old;
     const char *file;
     char *content;
     array_t *file_lines;
+    
+    /* help data */
+    bool display_help;
+    array_t *help_lines;
 
     /* screen */
     size_t screen_row;
@@ -108,6 +113,7 @@ int display_top_header(editor_t *data); // Error: KO
 int display_bottom_header(editor_t *data); // Error: KO
 
 /* update/setup display */
+array_t *get_help_lines(); // Error: NULL
 array_t *get_file_lines(char *content); // Error: NULL
 int update_pos(editor_t *data, int max_cols, int max_rows); // Error: KO
 char **format_lines(editor_t *data, int max_cols, int max_rows); // Error: NULL
@@ -124,6 +130,9 @@ extern char const flags[];
 extern char const *full_flags[];
 extern int const flags_argc[];
 extern int (* const flag_functions[])(editor_t *, int const, char const *[]);
+
+/* help */
+extern char help_content[];
 
 /* modes */
 extern char const *modes[];

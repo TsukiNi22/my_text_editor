@@ -49,6 +49,7 @@ DISPLAY := 		display/display_file.c \
 				display/headers.c
 
 UPDATE_SETUP :=	display/update-setup/map_file.c \
+				display/update-setup/map_help.c \
 				display/update-setup/format_lines.c \
 				display/update-setup/handle_keys.c \
 				display/update-setup/update_pos.c

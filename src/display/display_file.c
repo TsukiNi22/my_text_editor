@@ -21,7 +21,18 @@ File Description:
 #include "error.h"      // error handling
 #include <stdlib.h>     // free function
 #include <ncurses.h>    // ncurses function
+#include <stdbool.h>    // bool type
 #include <stddef.h>     // size_t type, NULL define
+
+// Free simple pointer
+static int free_ptr(void *ptr)
+{
+    // Check for potential null pointer
+    if (!ptr)
+        return err_prog(PTR_ERR, KO, ERR_INFO);
+    free(ptr);
+    return OK;
+}
 
 // display the line in the terminal
 static int display_content(editor_t *data, int max_cols, int max_rows)
@@ -74,7 +85,10 @@ int display_file(editor_t *data, const char *file)
         return err_prog(PTR_ERR, KO, ERR_INFO);
 
     // init the file value
+    curs_set(1);
     data->mode = WRITE;
+    data->mode_old = WRITE;
+    data->display_help = false;
     data->file = file;
     data->content = get_file(file);
     data->file_lines = get_file_lines(data->content);
@@ -105,6 +119,8 @@ int display_file(editor_t *data, const char *file)
     }
     
     // free memory alloced
+    if (delete_array(&data->file_lines, &free_ptr) == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
     free(data->content);
     return OK;
 }

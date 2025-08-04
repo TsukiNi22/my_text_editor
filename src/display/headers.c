@@ -31,6 +31,9 @@ File Description:
 */
 int display_top_header(editor_t *data)
 {
+    const char *file_name = "[help]";
+    int len = 0;
+
     // Check for potential null pointer
     if (!data)
         return err_prog(PTR_ERR, KO, ERR_INFO);
@@ -43,9 +46,20 @@ int display_top_header(editor_t *data)
     move(0, 0);
     clrtoeol();
     
+    // setup the file name
+    if (!data->display_help)
+        file_name = data->file;
+
     // write the header with the color
-    mvprintw(0, 0, "File: '%s'", data->file);
-    
+    for (len = 0; data->file[len]; len++);
+    if (COLS - 22 - 12 < 6)
+        mvprintw(0, 0, "'%.*s...'", (COLS - 22 - 6), file_name);
+    else if (len + 12 > COLS - 22)
+        mvprintw(0, 0, "file: '%.*s...'", (COLS - 22 - 12), file_name);
+    else
+        mvprintw(0, 0, "file: '%s'", file_name);
+    mvprintw(0, COLS - 22, "(press F5 for help...)");
+
     // write the header with the color
     bkgdset(A_NORMAL);
     return OK;

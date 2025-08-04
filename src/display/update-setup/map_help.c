@@ -14,7 +14,7 @@ File Name:
 ##  map_file.c
 
 File Description:
-##  Transforme the file content to sperated line
+##  Transforme the ehlp content to sperated line
 \**************************************************************/
 
 #include "array.h"      // array functions
@@ -24,23 +24,17 @@ File Description:
 #include <stdlib.h>     // malloc function
 #include <stddef.h>     // size_t type, NULL define
 
-/* Get file lines content function
+/* Get help lines function
 ----------------------------------------------------------------
- * Change the content of the file to line separate
-----------------------------------------------------------------
-##  content -> content of the file
+ * Change the content of the help to line separate
 ----------------------------------------------------------------
 ##  return -> the line with theire content separate
 */
-array_t *get_file_lines(char *content)
+array_t *get_help_lines(void)
 {
     array_t *file_lines = NULL;
     char *line = NULL;
     char *ptr = NULL;
-
-    // Check for potential null pointer
-    if (!content)
-        return err_prog_n(PTR_ERR, ERR_INFO);
 
     // malloc the basic array
     file_lines = new_array();
@@ -48,26 +42,26 @@ array_t *get_file_lines(char *content)
         return err_prog_n(UNDEF_ERR, ERR_INFO);
 
     // separate the content in lines
-    ptr = content;
-    for (size_t i = 0; content[i]; i++) {
-        if (content[i] == '\n' || !content[i + 1]) {
+    ptr = help_content;
+    for (size_t i = 0; help_content[i]; i++) {
+        if (help_content[i] == '\n' || !help_content[i + 1]) {
             // create the line
-            if (my_malloc_c(&(line), (&(content[i]) - ptr) + 1) == KO)
+            if (my_malloc_c(&(line), (&(help_content[i]) - ptr) + 1) == KO)
                 return err_prog_n(UNDEF_ERR, ERR_INFO);
             
             // setup the content of the ligne
-            content[i] *= !(content[i] == '\n');
+            help_content[i] *= !(help_content[i] == '\n');
             for (size_t j = 0; ptr[j]; j++)
                 line[j] = ptr[j];
-            if (!content[i])
-                content[i] = '\n';
+            if (!help_content[i])
+                help_content[i] = '\n';
 
             // add the line to the array
             if (add_array(file_lines, line) == KO)
                 return err_prog_n(UNDEF_ERR, ERR_INFO);
 
             // setup var for the next ligne
-            ptr = &(content[i + 1]);
+            ptr = &(help_content[i + 1]);
         }
     }
     return file_lines;

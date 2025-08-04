@@ -239,6 +239,76 @@ static int keys_edit(editor_t *data, const int ch)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
     }
     return OK;
+
+}
+
+// setup the help display
+static int content_help(editor_t *data)
+{
+    array_t *tmp_lines = NULL;
+
+    // Check for potential null pointer
+    if (!data)
+        return err_prog(PTR_ERR, KO, ERR_INFO);
+
+    if (data->display_help) {
+        // setup the mode
+        data->mode = data->mode_old;
+
+        // reset the ancient file content
+        if (delete_array(&data->file_lines, &free_ptr) == KO)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
+        data->file_lines = data->help_lines;
+        data->help_lines = NULL;
+        curs_set(1);
+    } else {
+        // setup the mode
+        data->mode_old = data->mode;
+        data->mode = NONE;
+        
+        // replace the file content
+        data->help_lines = get_help_lines();
+        if (!data->help_lines)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
+        tmp_lines = data->file_lines;
+        data->file_lines = data->help_lines;
+        data->help_lines = tmp_lines;
+        curs_set(0);
+    }
+
+    // udpate the status
+    data->display_help = !data->display_help;
+    return OK;
+}
+
+// set the mode from the key pressed
+static int changement_mode(editor_t *data, const int ch)
+{
+    file_mode_t tmp_mode = NONE;
+
+    // Check for potential null pointer
+    if (!data)
+        return err_prog(PTR_ERR, KO, ERR_INFO);
+    
+    if (ch == KEY_F(3)) {
+        data->mode_old = data->mode;
+        if (data->mode == WRITE)
+            data->mode = READ;
+        else
+            data->mode = WRITE;
+    } else if (ch == KEY_F(4)) {
+        data->mode_old = data->mode;
+        data->mode = EXE;
+    } else if (ch == 27) { // ESC
+        data->mode_old = data->mode;
+        data->mode = SELECT;
+    } else if (ch == KEY_F(6)) {
+        tmp_mode = data->mode;
+        data->mode = data->mode_old;
+        data->mode_old = tmp_mode;
+    }
+
+    return OK;
 }
 
 /* Handle key pressed function
@@ -257,11 +327,19 @@ int handle_keys(editor_t *data, const int ch)
         return err_prog(PTR_ERR, KO, ERR_INFO);
 
     // cursor movement
-    if (keys_cursor(data, ch) == KO)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
+    if (data->mode != NONE && keys_cursor(data, ch) == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
 
     // edit content
-    if (keys_edit(data, ch) == KO)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
+    if (data->mode == WRITE && keys_edit(data, ch) == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
+
+    // display help
+    if (ch == KEY_F(5) && content_help(data) == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
+
+    // mode changement
+    if (!data->display_help && changement_mode(data, ch) == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
     return OK;
 }
