@@ -32,7 +32,7 @@ bw files_path
 | Open/Close File      |  Done        |
 | Deplacement          |  Done        |
 | Edit Content (Basic) |  Done        |
-| Save Modification    |  In Progress |
-| Handle Spécial Char  |  Nothing     |
+| Save Modification    |  Done        |
+| Handle Spécial Char  |  In Progress |
 | Add Spécial Control  |  Nothing     |
 | User Customization   |  Nothing     |
