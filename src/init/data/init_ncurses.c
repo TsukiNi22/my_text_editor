@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  03/08/2025 by Tsukini
+##  04/08/2025 by Tsukini
 
 File Name:
 ##  init_ncurses.c
@@ -41,6 +41,7 @@ int init_ncurses(void)
     res += (start_color() == KO);           // activate the color
     res += (bkgd(A_NORMAL) == KO);          // set the basic color
     res += (keypad(stdscr, TRUE) == KO);    // allow spécial keys
+    res += (curs_set(1) == KO);             // set the style fo the cursor
     if (res != OK)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
     return OK;

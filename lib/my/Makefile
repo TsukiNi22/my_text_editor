@@ -126,6 +126,7 @@ WRITE := 	write/my_putchar.c \
 
 ARRAY := 	array/new_array.c \
 			array/add_array.c \
+			array/insert_array.c \
 			array/pop_array.c \
 			array/delete_array.c
 

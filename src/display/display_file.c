@@ -11,7 +11,7 @@ Edition:
 ##  04/08/2025 by Tsukini
 
 File Name:
-##  handle_file.c
+##  display_file.c
 
 File Description:
 ## Return the content of the given file
@@ -24,7 +24,7 @@ File Description:
 #include <stddef.h>     // size_t type, NULL define
 
 // display the line in the terminal
-static int display_content(editor_t *data)
+static int display_content(editor_t *data, int max_cols, int max_rows)
 {
     char **formated_lines = NULL;
     
@@ -34,7 +34,7 @@ static int display_content(editor_t *data)
     
     // format the lines for the row & col number
     resize_term(0, 0);
-    formated_lines = format_lines(data, COLS, LINES - 2);
+    formated_lines = format_lines(data, max_cols, max_rows);
     if (!formated_lines)
         return err_prog(PTR_ERR, KO, ERR_INFO);
 
@@ -65,8 +65,10 @@ static int display_content(editor_t *data)
 ##  data -> main data structure
 ----------------------------------------------------------------
 */
-int handle_file(editor_t *data, const char *file)
+int display_file(editor_t *data, const char *file)
 {
+    int max_cols, max_rows = 0;
+    
     // Check for potential null pointer
     if (!data || !file)
         return err_prog(PTR_ERR, KO, ERR_INFO);
@@ -85,12 +87,18 @@ int handle_file(editor_t *data, const char *file)
 
     // wait for F1 to quit
     for (int ch = KO; ch != KEY_F(1); ch = getch()) {
+        max_cols = COLS, max_rows = LINES - 2;
+        
         // handle the key pressed
         if (ch != KO && handle_keys(data, ch) == KO)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
 
+        // update the col & row of screen & cursor
+        if (update_pos(data, max_cols, max_rows) == KO)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
+        
         // update the display
-        if (display_content(data) == KO)
+        if (display_content(data, max_cols, max_rows) == KO)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
         move(data->cursor_row - data->screen_row + 1, data->cursor_col - data->screen_col);
     }

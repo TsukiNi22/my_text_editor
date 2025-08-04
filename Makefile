@@ -45,14 +45,16 @@ USEFUL := 		useful/is_valid_dir.c \
 				useful/is_valid_file.c \
 				useful/get_file.c
 
-DISPLAY := 		display/handle_file.c \
-				display/map_file.c \
-				display/format_lines.c \
-				display/handle_keys.c \
+DISPLAY := 		display/display_file.c \
 				display/headers.c
 
+UPDATE_SETUP :=	display/update-setup/map_file.c \
+				display/update-setup/format_lines.c \
+				display/update-setup/handle_keys.c \
+				display/update-setup/update_pos.c
+
 FILES := $(GLOBAL) $(INIT)
-FILES += $(USEFUL) $(DISPLAY)
+FILES += $(USEFUL) $(DISPLAY) $(UPDATE_SETUP)
 SRC := $(addprefix src/, $(FILES))
 OBJ := $(SRC:%.c=$(BUILD_DIR)/%.o)
 

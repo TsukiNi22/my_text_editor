@@ -35,6 +35,7 @@ array_t *new_array(void); // Error: NULL
 
 /* edit */
 int add_array(array_t *array, void *data); // Error: KO
+int insert_array(array_t *array, void *data, unsigned int index); // Error: KO
 int pop_array(array_t *array, int (*free_ptr)(void *), unsigned int index); // Error: KO
 
 /* free */

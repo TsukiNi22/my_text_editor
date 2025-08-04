@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  02/08/2025 by Tsukini
+##  04/08/2025 by Tsukini
 
 File Name:
 ##  kamion.c
@@ -83,7 +83,7 @@ int editor(int const argc, char const *argv[], editor_t *data)
 
     // for each file found call the handling file function
     for (size_t i = 0; i < data->files->len; i++) {
-        if (handle_file(data, data->files->data[i]) == KO)
+        if (display_file(data, data->files->data[i]) == KO)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
     }
     return OK;
