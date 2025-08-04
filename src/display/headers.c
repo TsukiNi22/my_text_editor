@@ -83,14 +83,14 @@ int display_bottom_header(editor_t *data)
     pos = COLS - 15 - pos_cursor_info;
     if (pos > 14)
         mvprintw(LINES - 1, 0, "mode: '%s'", "none"); // read, write, select, exe, none
-    else if (pos > 9)
+    else if (pos > 10)
         mvprintw(LINES - 1, 0, "mode: '%c'", 'n'); // r, w, s, e, n
     else
         mvprintw(LINES - 1, 0, "'%c'", 'n'); // r, w, s, e, n
     if (pos <= 4)
         pos = 5;
     mvprintw(LINES - 1, pos, "%lu,%lu", data->cursor_row + 1, data->cursor_col + 1);
-    if (pos > 9)
+    if (pos > 10)
         mvprintw(LINES - 1, COLS - 15 - 7, "%.1f%%", (((double) data->cursor_row * (double) 100) / ((double) data->file_lines->len - 1)));
     mvprintw(LINES - 1, COLS - 15, "(F1 to quit...)");
     
