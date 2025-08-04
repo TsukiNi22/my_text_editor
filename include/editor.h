@@ -25,6 +25,7 @@ File Description:
 
     /* type */
     #include "array.h"      // array_t type
+    #include <wchar.h>      // wchar_t type
     #include <stddef.h>     // size_t type
     #include <stdbool.h>    // boolean type
 
@@ -106,6 +107,7 @@ int flag_Directory(editor_t *data, int const argc, char const *argv[]); // Error
 bool is_valid_dir(editor_t *data, char const *path, bool err); // Error: false
 bool is_valid_file(editor_t *data, char const *path, bool err); // Error: false
 char *get_file(const char *file); // Error: NULL
+wchar_t *char_to_wchar(const char *line); // Error: NULL
 
 /* display */
 int display_file(editor_t *data, const char *file); // Error: KO
@@ -116,7 +118,7 @@ int display_bottom_header(editor_t *data); // Error: KO
 array_t *get_help_lines(); // Error: NULL
 array_t *get_file_lines(char *content); // Error: NULL
 int update_pos(editor_t *data, int max_cols, int max_rows); // Error: KO
-char **format_lines(editor_t *data, int max_cols, int max_rows); // Error: NULL
+wchar_t **format_lines(editor_t *data, int max_cols, int max_rows); // Error: NULL
 int handle_keys(editor_t *data, const int ch); // Error: KO
 
 /* exit */

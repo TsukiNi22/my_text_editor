@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  04/08/2025 by Tsukini
+##  05/08/2025 by Tsukini
 
 File Name:
 ##  display_file.c
@@ -22,7 +22,7 @@ File Description:
 #include "error.h"                  // error handling
 #define _XOPEN_SOURCE_EXTENDED 1    // for the extented version
 #include <ncursesw/curses.h>        // ncursesw functions
-#include <wchar.h>                  // mbstate_t type, mbsrtowcs function
+#include <wchar.h>                  // mbstate_t, wchar_t type, mbsrtowcs function
 #include <stdlib.h>                 // free, malloc function
 #include <stdbool.h>                // bool type
 #include <stddef.h>                 // size_t type, NULL define
@@ -37,41 +37,10 @@ static int free_ptr(void *ptr)
     return OK;
 }
 
-// print a wchar from a char
-static int print_wchar(int row, int col, const char *line)
-{
-    wchar_t *wline = NULL;
-    mbstate_t state = {0};
-    size_t res = 0;
-    size_t len = 0;
-    
-    // Check for potential null pointer
-    if (!line)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
-    
-    // create the new line
-    for (len = 0; line[len]; len++);
-    wline = malloc(sizeof(wchar_t) * (len + 1));
-    if (!wline)
-        return err_prog(MALLOC_ERR, KO, ERR_INFO);
-
-    // setup the line
-    res = mbsrtowcs(wline, &line, len + 1, &state);
-    if (res == (size_t) KO)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
-
-    // print the line
-    mvaddwstr(row, col, wline);
-    
-    // free the memory alloced
-    free(wline);
-    return OK;
-}
-
 // display the line in the terminal
 static int display_content(editor_t *data, int max_cols, int max_rows)
 {
-    char **formated_lines = NULL;
+    wchar_t **formated_lines = NULL;
     
     // Check for potential null pointer
     if (!data)
@@ -92,10 +61,8 @@ static int display_content(editor_t *data, int max_cols, int max_rows)
     // display the content
     if (display_top_header(data) == KO || display_bottom_header(data) == KO)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
-    for (int i = 1, row = 0; formated_lines[row] && i < LINES  - 1; i++, row++) {
-        if (print_wchar(i, 0, formated_lines[row]) == KO)
-            return err_prog(UNDEF_ERR, KO, ERR_INFO);
-    }
+    for (int i = 1, row = 0; formated_lines[row] && i < LINES  - 1; i++, row++)
+        mvaddwstr(i, 0, formated_lines[row]);
     refresh();
 
     // free memory alloced

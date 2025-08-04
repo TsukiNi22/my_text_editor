@@ -43,7 +43,8 @@ INIT :=			init/init_data.c \
 
 USEFUL := 		useful/is_valid_dir.c \
 				useful/is_valid_file.c \
-				useful/get_file.c
+				useful/get_file.c \
+				useful/char_to_wchar.c
 
 DISPLAY := 		display/display_file.c \
 				display/headers.c

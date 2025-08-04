@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  04/08/2025 by Tsukini
+##  05/08/2025 by Tsukini
 
 File Name:
 ##  format_lines.c
@@ -20,6 +20,7 @@ File Description:
 #include "memory.h"     // my_malloc_c function
 #include "editor.h"     // editor_t type, display defines
 #include "error.h"      // error handling
+#include <wchar.h>      // wchar_t type
 #include <stdlib.h>     // free, malloc function
 #include <stddef.h>     // size_t type, NULL define
 
@@ -31,26 +32,28 @@ File Description:
 ##  max_cols -> maximum number of colomuns
 ##  max_rows -> maximum number of rows
 ----------------------------------------------------------------
+##  return -> line with the right size for the terminal
 */
-char **format_lines(editor_t *data, int max_cols, int max_rows)
+wchar_t **format_lines(editor_t *data, int max_cols, int max_rows)
 {
-    char **formated_lines = NULL;
-    char *line = NULL;
+    wchar_t **formated_lines = NULL;
+    wchar_t *line = NULL;
 
     // Check for potential null pointer
     if (!data)
         return err_prog_n(PTR_ERR, ERR_INFO);
 
     // setup the array for the formated lines
-    formated_lines = malloc(sizeof(char *) * (max_rows + 1));
+    formated_lines = malloc(sizeof(wchar_t *) * (max_rows + 1));
     if (!formated_lines)
         return err_prog_n(MALLOC_ERR, ERR_INFO);
     for (int i = 0; i < max_rows; i++) {
-        if (my_malloc_c(&(formated_lines[i]), max_cols + 1) == KO)
-            return err_prog_n(UNDEF_ERR, ERR_INFO);
+        formated_lines[i] = malloc(sizeof(wchar_t) * (max_cols + 1));
+        if (!formated_lines[i])
+            return err_prog_n(MALLOC_ERR, ERR_INFO);
         for (int j = 0; j < max_cols; j++)
-            formated_lines[i][j] = ' ';
-        formated_lines[i][max_cols] = '\0';
+            formated_lines[i][j] = L' ';
+        formated_lines[i][max_cols] = L'\0';
     }
     formated_lines[max_rows] = NULL;
 

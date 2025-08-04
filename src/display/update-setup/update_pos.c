@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  04/08/2025 by Tsukini
+##  05/08/2025 by Tsukini
 
 File Name:
 ##  update_pos.c
@@ -19,6 +19,7 @@ File Description:
 
 #include "editor.h"     // editor_t type, get_file function
 #include "error.h"      // error handling
+#include <wchar.h>      // wchar_t type, wcslen function
 #include <stdlib.h>     // free function
 #include <stddef.h>     // size_t type, NULL define
 
@@ -35,7 +36,7 @@ File Description:
 int update_pos(editor_t *data, int max_cols, int max_rows)
 {
     size_t lines_nb, line_len = 0;
-    char *line = NULL;
+    wchar_t *line = NULL;
     
     // Check for potential null pointer
     if (!data)
@@ -50,7 +51,7 @@ int update_pos(editor_t *data, int max_cols, int max_rows)
 
     // formatage of the cursor's col
     line = data->file_lines->data[data->cursor_row];
-    for (line_len = 0; line[line_len]; line_len++);
+    line_len = wcslen(line);
     if (line_len == 0)
         data->cursor_col = 0;
     else if (data->cursor_col > line_len && line_len > 0)

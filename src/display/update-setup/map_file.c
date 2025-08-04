@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  04/08/2025 by Tsukini
+##  05/08/2025 by Tsukini
 
 File Name:
 ##  map_file.c
@@ -21,7 +21,7 @@ File Description:
 #include "memory.h"     // my_malloc_c function
 #include "editor.h"     // editor_t type, display defines
 #include "error.h"      // error handling
-#include <stdlib.h>     // malloc function
+#include <stdlib.h>     // free function
 #include <stddef.h>     // size_t type, NULL define
 
 /* Get file lines content function
@@ -63,8 +63,9 @@ array_t *get_file_lines(char *content)
                 content[i] = '\n';
 
             // add the line to the array
-            if (add_array(file_lines, line) == KO)
+            if (add_array(file_lines, char_to_wchar(line)) == KO)
                 return err_prog_n(UNDEF_ERR, ERR_INFO);
+            free(line);
 
             // setup var for the next ligne
             ptr = &(content[i + 1]);
@@ -73,12 +74,8 @@ array_t *get_file_lines(char *content)
 
     // empty file initialisation
     if (!content[0]) {
-        // create the line
-        if (my_malloc_c(&(line), 1) == KO)
-            return err_prog_n(UNDEF_ERR, ERR_INFO);
-
         // add the line to the array
-        if (add_array(file_lines, line) == KO)
+        if (add_array(file_lines, char_to_wchar("")) == KO)
             return err_prog_n(UNDEF_ERR, ERR_INFO);
     }
     return file_lines;

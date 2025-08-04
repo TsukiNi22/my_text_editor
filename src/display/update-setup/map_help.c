@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  04/08/2025 by Tsukini
+##  05/08/2025 by Tsukini
 
 File Name:
 ##  map_file.c
@@ -57,8 +57,9 @@ array_t *get_help_lines(void)
                 help_content[i] = '\n';
 
             // add the line to the array
-            if (add_array(file_lines, line) == KO)
+            if (add_array(file_lines, char_to_wchar(line)) == KO)
                 return err_prog_n(UNDEF_ERR, ERR_INFO);
+            free(line);
 
             // setup var for the next ligne
             ptr = &(help_content[i + 1]);
