@@ -27,7 +27,7 @@ int insert_array(array_t *array, void *data, unsigned int index)
         free(array->data);
         array->data = tmp;
     }
-    for (size_t i = array->len; i >= index; i--)
+    for (size_t i = array->len; i > index; i--)
         array->data[i] = array->data[i - 1];
     array->data[index] = data;
     array->len++;

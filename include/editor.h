@@ -38,6 +38,15 @@ File Description:
 //----------------------------------------------------------------//
 /* TYPEDEF */
 
+/* mode */
+typedef enum file_mode_e {
+    NONE = 0,
+    READ,       
+    WRITE,
+    SELECT,
+    EXE,
+} file_mode_t;
+
 /* data */
 typedef struct editor_s {
     /* global_info */
@@ -49,6 +58,7 @@ typedef struct editor_s {
     array_t *files;
  
     /* global data */
+    file_mode_t mode;
     const char *file;
     char *content;
     array_t *file_lines;
@@ -114,5 +124,8 @@ extern char const flags[];
 extern char const *full_flags[];
 extern int const flags_argc[];
 extern int (* const flag_functions[])(editor_t *, int const, char const *[]);
+
+/* modes */
+extern char const *modes[];
 
 #endif /* EDITOR_H */

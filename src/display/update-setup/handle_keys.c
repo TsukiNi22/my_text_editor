@@ -25,6 +25,16 @@ File Description:
 #include <stdlib.h>     // free function
 #include <stddef.h>     // size_t type, NULL define
 
+// Free simple pointer
+static int free_ptr(void *ptr)
+{
+    // Check for potential null pointer
+    if (!ptr)
+        return err_prog(PTR_ERR, KO, ERR_INFO);
+    free(ptr);
+    return OK;
+}
+
 // change the cursor position x/y
 static int keys_cursor(editor_t *data, const int ch)
 {
@@ -47,6 +57,72 @@ static int keys_cursor(editor_t *data, const int ch)
         data->cursor_col++;
     if (ch == KEY_LEFT || ch == KEY_RIGHT)
         data->cursor_actual_col = data->cursor_col;
+    return OK;
+}
+
+// insert a new line on the cursor
+static int content_del_line(editor_t *data, const int ch)
+{
+    char *line, *new_line = NULL;
+    size_t len[2] = {0};
+    size_t index = 0;
+    
+    // Check for potential null pointer
+    if (!data)
+        return err_prog(PTR_ERR, KO, ERR_INFO);
+
+    if (ch == KEY_BACKSPACE) {
+        // init of the new_line
+        line = data->file_lines->data[data->cursor_row - 1];
+        for (size_t i = 0; line[i]; i++, len[0]++);
+        line = data->file_lines->data[data->cursor_row];
+        for (size_t i = 0; line[i]; i++, len[1]++);
+        if (my_malloc_c(&new_line, len[0] + len[1] + 1) == KO)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
+
+        // setup the new_line
+        line = data->file_lines->data[data->cursor_row - 1];
+        for (size_t i = 0; i < len[0]; i++, index++)
+            new_line[index] = line[i];
+        line = data->file_lines->data[data->cursor_row];
+        for (size_t i = 0; i < len[1]; i++, index++)
+            new_line[index] = line[i];
+
+        // setup of the var
+        if (pop_array(data->file_lines, &free_ptr, data->cursor_row) == KO
+            || pop_array(data->file_lines, &free_ptr, data->cursor_row - 1) == KO)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
+        if (insert_array(data->file_lines, new_line, data->cursor_row - 1) == KO)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
+        data->cursor_row--;
+        data->cursor_actual_col = len[0];
+        data->cursor_col = len[0];
+    } else {
+        // init of the new_line
+        line = data->file_lines->data[data->cursor_row];
+        for (size_t i = 0; line[i]; i++, len[0]++);
+        line = data->file_lines->data[data->cursor_row + 1];
+        for (size_t i = 0; line[i]; i++, len[1]++);
+        if (my_malloc_c(&new_line, len[0] + len[1] + 1) == KO)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
+
+        // setup the new_line
+        line = data->file_lines->data[data->cursor_row];
+        for (size_t i = 0; i < len[0]; i++, index++)
+            new_line[index] = line[i];
+        line = data->file_lines->data[data->cursor_row + 1];
+        for (size_t i = 0; i < len[1]; i++, index++)
+            new_line[index] = line[i];
+
+        // setup of the var
+        if (pop_array(data->file_lines, &free_ptr, data->cursor_row + 1) == KO
+            || pop_array(data->file_lines, &free_ptr, data->cursor_row) == KO)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
+        if (insert_array(data->file_lines, new_line, data->cursor_row) == KO)
+            return err_prog(UNDEF_ERR, KO, ERR_INFO);
+        data->cursor_actual_col = len[0];
+        data->cursor_col = len[0];
+    }
     return OK;
 }
 
@@ -132,13 +208,22 @@ static int content_add(editor_t *data, const int ch)
 // edit the content from the key pressed
 static int keys_edit(editor_t *data, const int ch)
 {
+    char *line = NULL;
+    size_t len = 0;
+
     // Check for potential null pointer
     if (!data)
         return err_prog(PTR_ERR, KO, ERR_INFO);
   
     // supr of a char
-    if (ch == KEY_DC || ch == 127 || (ch == KEY_BACKSPACE && data->cursor_col > 0)) {
-        if (content_del(data, ch) == KO)
+    if (ch == KEY_DC || ch == 127 || ch == KEY_BACKSPACE) {
+        line = data->file_lines->data[data->cursor_row];
+        for (len = 0; line[len]; len++);
+        if ((data->cursor_row > 0 && data->cursor_col == 0 && ch == KEY_BACKSPACE)
+            || (data->cursor_row < data->file_lines->len - 1 && data->cursor_col == len && (ch == KEY_DC || ch == 127))) {
+            if (content_del_line(data, ch) == KO)
+                return err_prog(UNDEF_ERR, KO, ERR_INFO);
+        } else if (!(data->cursor_col == 0 && ch == KEY_BACKSPACE) && content_del(data, ch) == KO)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
     }
 

@@ -82,11 +82,11 @@ int display_bottom_header(editor_t *data)
     // write the header with the color
     pos = COLS - 15 - pos_cursor_info;
     if (pos > 14)
-        mvprintw(LINES - 1, 0, "mode: '%s'", "none"); // read, write, select, exe, none
+        mvprintw(LINES - 1, 0, "mode: '%s'", modes[data->mode]);
     else if (pos > 10)
-        mvprintw(LINES - 1, 0, "mode: '%c'", 'n'); // r, w, s, e, n
+        mvprintw(LINES - 1, 0, "mode: '%c'", modes[data->mode][0]);
     else
-        mvprintw(LINES - 1, 0, "'%c'", 'n'); // r, w, s, e, n
+        mvprintw(LINES - 1, 0, "'%c'", modes[data->mode][0]);
     if (pos <= 4)
         pos = 5;
     mvprintw(LINES - 1, pos, "%lu,%lu", data->cursor_row + 1, data->cursor_col + 1);

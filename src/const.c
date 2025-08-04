@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  01/08/2025 by Tsukini
+##  04/08/2025 by Tsukini
 
 File Name:
 ##  const.c
@@ -48,4 +48,14 @@ int (* const flag_functions[])(editor_t *, int const, char const *[]) = {
     &flag_null, // help (special case)
     &flag_directory, // directory
     &flag_Directory, // Directory
+};
+
+// Full mode name
+char const *modes[] = {
+    "none",
+    "read",
+    "write",
+    "select",
+    "exe",
+    NULL
 };

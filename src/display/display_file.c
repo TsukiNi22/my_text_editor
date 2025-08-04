@@ -74,6 +74,7 @@ int display_file(editor_t *data, const char *file)
         return err_prog(PTR_ERR, KO, ERR_INFO);
 
     // init the file value
+    data->mode = READ;
     data->file = file;
     data->content = get_file(file);
     data->file_lines = get_file_lines(data->content);
