@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  02/08/2025 by Tsukini
+##  05/08/2025 by Tsukini
 
 File Name:
 ##  init_data.c
@@ -36,9 +36,6 @@ int init_data(editor_t *data)
     
     // Init global data used in every sub part
     if (init_global(data) == KO)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
-    // Init ncurses
-    if (init_ncurses() == KO)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
     return OK;
 }

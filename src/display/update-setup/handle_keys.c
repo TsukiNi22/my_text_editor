@@ -337,7 +337,7 @@ static int save_content(editor_t *data)
     // write the file
     file = fopen(data->file, "w");
     if (!file)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
+        return err_prog(OP_FILE_ERR, KO, ERR_INFO);
     fputs(file_content, file);
     fclose(file);
     return OK;

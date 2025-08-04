@@ -8,7 +8,7 @@
  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
 Edition:
-##  04/08/2025 by Tsukini
+##  05/08/2025 by Tsukini
 
 File Name:
 ##  kamion.c
@@ -19,10 +19,12 @@ File Description:
 ## and call each part of the editor
 \**************************************************************/
 
+#include <unistd.h>
 #include "memory.h"     // my_strdup function
 #include "array.h"      // array_t type
 #include "editor.h"     // editor_t type
 #include "error.h"      // error handling
+#include <stdbool.h>    // bool type
 #include <stddef.h>     // size_t type
 
 // Add the file given directly to the list
@@ -36,6 +38,9 @@ static int direct_file(editor_t *data, int const argc, char const *argv[])
         // End of the normal file definition
         if (argv[i][0] == '-')
             break;
+
+        if (is_valid_dir(data, argv[i], false))
+            return err_bw_arg(data, KO, "Argument", "This is a directory", argv[i], NULL, false);
 
         // Set the file in the array
         if (add_array(data->files, my_strdup((char *) argv[i])) == KO)
@@ -76,6 +81,10 @@ int editor(int const argc, char const *argv[], editor_t *data)
     // Execption
     if (data->files->len == 0)
         return err_bw_arg(data, KO, "File", "No valid file found for the edition", NULL, NULL, false);
+
+    // Init ncurses (only now to prevent redirection of the stind/stderr for error & wrning)
+    if (init_ncurses() == KO)
+        return err_prog(UNDEF_ERR, KO, ERR_INFO);
 
     // for each file found call the handling file function
     for (size_t i = 0; i < data->files->len; i++) {
