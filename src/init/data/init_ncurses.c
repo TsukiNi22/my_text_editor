@@ -18,6 +18,7 @@ File Description:
 \**************************************************************/
 
 #include "error.h"      // error handling
+#include <locale.h>     // setlocale function
 #include <ncurses.h>    // ncurses init function
 
 /* Ncurses initialisation function
@@ -35,6 +36,9 @@ int init_ncurses(void)
     if (!initscr())
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
 
+    // take the encoding of the terminal
+    setlocale(LC_ALL, "");
+    
     // parametre of ncurses
     res += (cbreak() == KO);                // no wait for enter to read the keys pressed
     res += (noecho() == KO);                // dosen't display the keys pressed
