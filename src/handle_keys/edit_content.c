@@ -11,20 +11,18 @@ Edition:
 ##  05/08/2025 by Tsukini
 
 File Name:
-##  handle_keys.c
+##  edit_content.c
 
 File Description:
-## Handle the key pressed during the display
+##  Handle the edit of the content
 \**************************************************************/
 
-#include "memory.h"     // my_malloc_c function
 #include "array.h"      // insert_array function
 #include "editor.h"     // editor_t type
 #include "error.h"      // error handling
 #include <ncurses.h>    // ncurses function
 #include <wchar.h>      // wchar_t type, wclen function
 #include <stdlib.h>     // free function
-#include <stdio.h>      // file handle functions
 #include <stddef.h>     // size_t type, NULL define
 
 // Free simple pointer
@@ -34,31 +32,6 @@ static int free_ptr(void *ptr)
     if (!ptr)
         return err_prog(PTR_ERR, KO, ERR_INFO);
     free(ptr);
-    return OK;
-}
-
-// change the cursor position x/y
-static int keys_cursor(editor_t *data, const int ch)
-{
-    // Check for potential null pointer
-    if (!data)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
-  
-    // cursor movement y
-    if (ch == KEY_UP && data->cursor_row > 0)
-        data->cursor_row--;
-    else if (ch == KEY_DOWN)
-        data->cursor_row++;
-    if (ch == KEY_UP || ch == KEY_DOWN)
-        data->cursor_col = data->cursor_actual_col;
-    
-    // cursor movement x
-    if (ch == KEY_LEFT && data->cursor_col > 0)
-        data->cursor_col--;
-    else if (ch == KEY_RIGHT)
-        data->cursor_col++;
-    if (ch == KEY_LEFT || ch == KEY_RIGHT)
-        data->cursor_actual_col = data->cursor_col;
     return OK;
 }
 
@@ -199,8 +172,15 @@ static int content_add(editor_t *data, const int ch)
     return OK;
 }
 
-// edit the content from the key pressed
-static int keys_edit(editor_t *data, const int ch)
+/* Handle key pressed function
+----------------------------------------------------------------
+ * Dispatch the key to edit the content from the key pressed
+----------------------------------------------------------------
+##  data -> main data structure
+##  ch -> the key code
+----------------------------------------------------------------
+*/
+int keys_edit(editor_t *data, const int ch)
 {
     wchar_t *line = NULL;
     size_t len = 0;
@@ -234,147 +214,4 @@ static int keys_edit(editor_t *data, const int ch)
     }
     return OK;
 
-}
-
-// setup the help display
-static int content_help(editor_t *data)
-{
-    array_t *tmp_lines = NULL;
-
-    // Check for potential null pointer
-    if (!data)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
-
-    if (data->display_help) {
-        // setup the mode
-        data->mode = data->mode_old;
-
-        // reset the ancient file content
-        if (delete_array(&data->file_lines, &free_ptr) == KO)
-            return err_prog(UNDEF_ERR, KO, ERR_INFO);
-        data->file_lines = data->help_lines;
-        data->help_lines = NULL;
-        curs_set(1);
-    } else {
-        // setup the mode
-        data->mode_old = data->mode;
-        data->mode = NONE;
-        
-        // replace the file content
-        data->help_lines = get_help_lines();
-        if (!data->help_lines)
-            return err_prog(UNDEF_ERR, KO, ERR_INFO);
-        tmp_lines = data->file_lines;
-        data->file_lines = data->help_lines;
-        data->help_lines = tmp_lines;
-        curs_set(0);
-    }
-
-    // udpate the status
-    data->display_help = !data->display_help;
-    return OK;
-}
-
-// set the mode from the key pressed
-static int changement_mode(editor_t *data, const int ch)
-{
-    file_mode_t tmp_mode = NONE;
-
-    // Check for potential null pointer
-    if (!data)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
-    
-    if (ch == KEY_F(3)) {
-        data->mode_old = data->mode;
-        if (data->mode == WRITE)
-            data->mode = READ;
-        else
-            data->mode = WRITE;
-    } else if (ch == KEY_F(4)) {
-        data->mode_old = data->mode;
-        data->mode = EXE;
-    } else if (ch == 27) { // ESC
-        data->mode_old = data->mode;
-        data->mode = SELECT;
-    } else if (ch == KEY_F(6)) {
-        tmp_mode = data->mode;
-        data->mode = data->mode_old;
-        data->mode_old = tmp_mode;
-    }
-
-    return OK;
-}
-
-// save the actual file modified
-static int save_content(editor_t *data)
-{
-    FILE *file = NULL;
-    char *file_content = NULL;
-    char *line = NULL;
-    size_t size, index = 0;
-
-    // Check for potential null pointer
-    if (!data)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
-    
-    // get the full size
-    for (size_t i = 0; i < data->file_lines->len; i++) {
-        line = data->file_lines->data[i];
-        for (size_t j = 0; line[j]; j++, size++);
-    }
-    if (my_malloc_c(&file_content, size + data->file_lines->len + 1) == KO)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
-    
-    // setup the content
-    for (size_t i = 0; i < data->file_lines->len; i++) {
-        line = data->file_lines->data[i];
-        for (size_t j = 0; line[j]; j++, index++)
-            file_content[index] = line[j];
-        if (i + 1 < data->file_lines->len)
-            file_content[index++] = '\n';
-    }
-
-    // write the file
-    file = fopen(data->file, "w");
-    if (!file)
-        return err_prog(OP_FILE_ERR, KO, ERR_INFO);
-    fputs(file_content, file);
-    fclose(file);
-    return OK;
-}
-
-/* Handle key pressed function
-----------------------------------------------------------------
- * Handle the key pressed during the display of a File
- * and do/call the corresponding action
-----------------------------------------------------------------
-##  data -> main data structure
-##  ch -> the key code
-----------------------------------------------------------------
-*/
-int handle_keys(editor_t *data, const int ch)
-{
-    // Check for potential null pointer
-    if (!data)
-        return err_prog(PTR_ERR, KO, ERR_INFO);
-
-    // cursor movement
-    if (data->mode != NONE && keys_cursor(data, ch) == KO)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
-
-    // edit content
-    if (data->mode == WRITE && keys_edit(data, ch) == KO)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
-
-    // display help
-    if (ch == KEY_F(5) && content_help(data) == KO)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
-
-    // mode changement
-    if (!data->display_help && changement_mode(data, ch) == KO)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
-    
-    if (data->mode != NONE && ch == KEY_F(2) && save_content(data) == KO)
-        return err_prog(UNDEF_ERR, KO, ERR_INFO);
-    return OK;
 }

@@ -52,11 +52,17 @@ DISPLAY := 		display/display_file.c \
 UPDATE_SETUP :=	display/update-setup/map_file.c \
 				display/update-setup/map_help.c \
 				display/update-setup/format_lines.c \
-				display/update-setup/handle_keys.c \
 				display/update-setup/update_pos.c
 
+HANDLE_KEYS := 	handle_keys/handle_keys.c \
+				handle_keys/cursor.c \
+				handle_keys/edit_content.c \
+				handle_keys/save_content.c \
+				handle_keys/modes.c \
+				handle_keys/help.c
+
 FILES := $(GLOBAL) $(INIT)
-FILES += $(USEFUL) $(DISPLAY) $(UPDATE_SETUP)
+FILES += $(USEFUL) $(DISPLAY) $(UPDATE_SETUP) $(HANDLE_KEYS)
 SRC := $(addprefix src/, $(FILES))
 OBJ := $(SRC:%.c=$(BUILD_DIR)/%.o)
 

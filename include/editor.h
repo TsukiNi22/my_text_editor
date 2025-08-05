@@ -119,7 +119,14 @@ array_t *get_help_lines(); // Error: NULL
 array_t *get_file_lines(char *content); // Error: NULL
 int update_pos(editor_t *data, int max_cols, int max_rows); // Error: KO
 wchar_t **format_lines(editor_t *data, int max_cols, int max_rows); // Error: NULL
+
+/*handle keys */
 int handle_keys(editor_t *data, const int ch); // Error: KO
+int keys_cursor(editor_t *data, const int ch); // Error: KO
+int keys_edit(editor_t *data, const int ch); // Error: KO
+int save_content(editor_t *data); // Error: KO
+int changement_mode(editor_t *data, const int ch); // Error: KO
+int content_help(editor_t *data); // Error: KO
 
 /* exit */
 int free_data(editor_t *data); // Error: KO
