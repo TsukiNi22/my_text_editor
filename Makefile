@@ -47,7 +47,8 @@ USEFUL := 		useful/is_valid_dir.c \
 				useful/char_to_wchar.c
 
 DISPLAY := 		display/display_file.c \
-				display/headers.c
+				display/headers.c \
+				display/dialog.c
 
 UPDATE_SETUP :=	display/update-setup/map_file.c \
 				display/update-setup/map_help.c \

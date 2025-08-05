@@ -52,7 +52,7 @@ int handle_keys(editor_t *data, const int ch)
     if (!data->display_help && changement_mode(data, ch) == KO)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
     
-    if (data->mode != NONE && ch == KEY_F(2) && save_content(data) == KO)
+    if (data->mode != NONE && data->changed && ch == KEY_F(2) && save_content(data) == KO)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
     return OK;
 }

@@ -23,6 +23,7 @@ File Description:
 #include <ncurses.h>    // ncurses function
 #include <wchar.h>      // wchar_t type, wclen function
 #include <stdlib.h>     // free function
+#include <stdbool.h>    // bool type
 #include <stddef.h>     // size_t type, NULL define
 
 // Free simple pointer
@@ -191,6 +192,7 @@ int keys_edit(editor_t *data, const int ch)
   
     // supr of a char
     if (ch == KEY_DC || ch == 127 || ch == KEY_BACKSPACE) {
+        data->changed = true;
         line = data->file_lines->data[data->cursor_row];
         len = wcslen(line);
         if ((data->cursor_row > 0 && data->cursor_col == 0 && ch == KEY_BACKSPACE)
@@ -203,12 +205,14 @@ int keys_edit(editor_t *data, const int ch)
 
     // new line
     if (ch == KEY_ENTER || ch == 10) {
+        data->changed = true;
         if (content_new_line(data) == KO)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
     }
 
     // add of a char
     if (ch >= 32 && ch <= 126) {
+        data->changed = true;
         if (content_add(data, ch) == KO)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
     }

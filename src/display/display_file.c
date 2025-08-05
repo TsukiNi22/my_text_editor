@@ -17,6 +17,7 @@ File Description:
 ## Return the content of the given file
 \**************************************************************/
 
+#include "my_string.h"              // my_strcmp function
 #include "memory.h"                 // my_malloc_c function
 #include "editor.h"                 // editor_t type, get_file function
 #include "error.h"                  // error handling
@@ -83,6 +84,7 @@ static int init_var(editor_t *data, const char *file)
     curs_set(1);
     data->mode = WRITE;
     data->mode_old = WRITE;
+    data->changed = false;
     data->display_help = false;
 
     // init file information
@@ -113,7 +115,9 @@ static int init_var(editor_t *data, const char *file)
 */
 int display_file(editor_t *data, const char *file)
 {
+    char *anwser = NULL;
     int max_cols, max_rows = 0;
+    bool out = false;
     
     // Check for potential null pointer
     if (!data || !file)
@@ -124,9 +128,24 @@ int display_file(editor_t *data, const char *file)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);
 
     // wait for F1 to quit
-    for (int ch = KO; ch != KEY_F(1); ch = getch()) {
+    for (int ch = KO; !out; ch = getch()) {
         max_cols = COLS, max_rows = LINES - 2;
-        
+     
+        // check if the user forgot to save
+        out = (ch == KEY_F(1));
+        if (out && data->changed) {
+            anwser = dialog(data, "Do you want to leave with unsaved change? (y/n)", KO);
+            if (!anwser)
+                return err_prog(UNDEF_ERR, KO, ERR_INFO);
+            if (my_strcmp(anwser, "N") == 0 || my_strcmp(anwser, "n") == 0
+                || my_strcmp(anwser, "No") == 0 || my_strcmp(anwser, "no") == 0
+                || my_strcmp(anwser, "Non") == 0 || my_strcmp(anwser, "non") == 0)
+                out = false;
+            free(anwser);
+        }
+        if (out)
+            break;
+
         // handle the key pressed
         if (ch != KO && handle_keys(data, ch) == KO)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
@@ -140,7 +159,7 @@ int display_file(editor_t *data, const char *file)
             return err_prog(UNDEF_ERR, KO, ERR_INFO);
         move(data->cursor_row - data->screen_row + 1, data->cursor_col - data->screen_col);
     }
-    
+
     // free memory alloced
     if (delete_array(&data->file_lines, &free_ptr) == KO)
         return err_prog(UNDEF_ERR, KO, ERR_INFO);

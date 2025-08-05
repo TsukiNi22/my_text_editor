@@ -36,6 +36,9 @@ File Description:
     #define CURSOR_ROW_FROM_BORDER 2
     #define CURSOR_COL_FROM_BORDER 5
 
+    /* dialog */
+    #define MAX_ANWSER_SIZE 15
+
 //----------------------------------------------------------------//
 /* TYPEDEF */
 
@@ -58,9 +61,12 @@ typedef struct editor_s {
     /* argument information */
     array_t *files;
  
-    /* global file data */
+    /* status */
     file_mode_t mode;
     file_mode_t mode_old;
+    bool changed;
+
+    /* global file data */
     const char *file;
     char *content;
     array_t *file_lines;
@@ -77,6 +83,7 @@ typedef struct editor_s {
     size_t cursor_actual_col;
     size_t cursor_row;
     size_t cursor_col;
+    size_t cursor_dialog_col;
 
     /* ouput */
     bool help;
@@ -113,6 +120,7 @@ wchar_t *char_to_wchar(const char *line); // Error: NULL
 int display_file(editor_t *data, const char *file); // Error: KO
 int display_top_header(editor_t *data); // Error: KO
 int display_bottom_header(editor_t *data); // Error: KO
+char *dialog(editor_t *data, const char *question, size_t size); // Error: NULL
 
 /* update/setup display */
 array_t *get_help_lines(); // Error: NULL
