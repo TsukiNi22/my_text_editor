@@ -13,6 +13,7 @@ test_sample.c
 a.out
 unit_tests
 test_file
+test
 :
 q
 vg
