@@ -27,12 +27,12 @@ bw files_path
 
 ## Text editor Advencement made in `C`
 
-| Task                 | State        |
-| -------------------- | ------------ |
-| Open/Close File      |  Done        |
-| Deplacement          |  Done        |
-| Edit Content (Basic) |  Done        |
-| Save Modification    |  Done        |
-| Handle Spécial Char  |  In Progress |
-| Add Spécial Control  |  Nothing     |
-| User Customization   |  Nothing     |
+| Task                        | State       |
+| --------------------------- | ----------- |
+| Open/Close File             | Done        |
+| Deplacement                 | Done        |
+| Edit Content (Basic)        | Done        |
+| Save Modification           | Done        |
+| Handle Spécial Char         | Done        |
+| Add Spécial Control (Basic) | In Progress |
+| User Customization          | Nothing     |
