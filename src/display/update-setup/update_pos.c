@@ -64,7 +64,7 @@ int update_pos(editor_t *data, int max_cols, int max_rows)
          else if ((int) data->cursor_row >= max_rows - 1 - CURSOR_ROW_FROM_BORDER)
             data->screen_row = data->cursor_row - (max_rows - 1 - CURSOR_ROW_FROM_BORDER);
         else
-            data->screen_row = 0;
+            data->screen_row = 1;
     }
     if (data->cursor_row < data->screen_row + CURSOR_ROW_FROM_BORDER) {
         if (data->cursor_row >= CURSOR_ROW_FROM_BORDER)
